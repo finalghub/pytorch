@@ -589,6 +589,10 @@ def _multi_tensor_adam(
 
     assert not differentiable, "_foreach ops don't support autograd"
 
+    for i, step_tensor in enumerate(state_steps):
+        if step_tensor.dtype == torch.int64:
+            state_steps[i] = step_tensor.float()
+
     grouped_tensors = Optimizer._group_tensors_by_device_and_dtype(
         [params, grads, exp_avgs, exp_avg_sqs, max_exp_avg_sqs, state_steps]  # type: ignore[list-item]
     )
